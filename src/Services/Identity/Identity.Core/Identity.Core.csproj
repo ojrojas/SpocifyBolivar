@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Services\" />
+    <None Remove="Repositories\" />
+    <None Remove="Helpers\" />
+    <None Remove="Entities\" />
+    <None Remove="Dtos\" />
+    <None Remove="Data\" />
+    <None Remove="Dtos\ApplicationUser\" />
+    <None Remove="Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Entities\" />
+    <Folder Include="Dtos\" />
+    <Folder Include="Data\" />
+    <Folder Include="Dtos\ApplicationUser\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlock\BuildingBlock.Infraestructure\BuildingBlock.Infraestructure.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlock\BuildingBlock.Commons\BuildingBlock.Commons.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenIddict.Abstractions" Version="4.6.0" />
+    <PackageReference Include="OpenIddict.AspNetCore" Version="4.6.0" />
+    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="4.6.0" />
+    <PackageReference Include="Ardalis.Specification" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.9" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
+  </ItemGroup>
+</Project>

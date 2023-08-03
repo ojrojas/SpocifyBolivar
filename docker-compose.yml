@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+
+  redis.identity:
+    image: redis/redis-stack:latest
+
+  sql.identity:
+    image: postgres
+
+  identity.api:
+    image: ${DOCKER_REGISTRY-}identity
+    build:
+      context: .
+      dockerfile: src/Services/Identity/Identity.Api/Dockerfile
+
+  aggregator.api:
+    image: ${DOCKER_REGISTRY-}aggregator
+    build:
+      context: .
+      dockerfile: src/Services/Aggregator/Aggregator.Api/Dockerfile
+
+
+  jukebox.api:
+    image: ${DOCKER_REGISTRY-}jukebox
+    build:
+      context: .
+      dockerfile: src/Services/JukeBox/JukeBox.Api/Dockerfile
+

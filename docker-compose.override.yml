@@ -1,0 +1,85 @@
+version: '3.4'
+
+services:
+
+  redis.identity:
+    container_name: redis-identity
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - redis-data-store:/data
+    networks:
+      - cachenet
+  
+  sql.identity:
+    container_name: sql-identity
+    environment:
+      - POSTGRES_PASSWORD=${IDENTITY_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - sqldata-identity-store:/var/lib/postgresql/data \
+    networks:
+      - identitynet
+
+  identity.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - IdentityUrl=${IDENTITYURL}
+      - CacheConnection=redis.identity
+      - ConnectionIdentity=host=sql.identity;port=5432;database=IdentityDb;username=postgres;password=${IDENTITY_PASSWORD}
+      - UrlsAllow=IdentityApi@http://${DNS_OR_IP_HOST_CONTAINER}:5005,JukeBoxApi@http://${DNS_OR_IP_HOST_CONTAINER}:5205
+    ports:
+      - "5005:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+    networks:
+      - identitynet
+      - cachenet
+    depends_on:
+      - sql.identity
+      - redis.identity
+
+  aggregator.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - IdentityUrl=${IDENTITYURL}
+    ports:
+      - "5105:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+
+  jukebox.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - IdentityUrl=${IDENTITYURL}
+      - CacheConnection=redis.identity
+    ports:
+      - "5205:80"
+    volumes:
+      - ~/.aspnet/https:/root/.aspnet/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro
+    networks:
+      - identitynet
+      - cachenet
+    depends_on:
+      - identity.api
+      - redis.identity
+
+networks:
+  identitynet:
+    driver: bridge
+  cachenet:
+    driver: bridge
+
+volumes:
+  sqldata-identity-store:
+    external: false
+  redis-data-store:
+    external: false

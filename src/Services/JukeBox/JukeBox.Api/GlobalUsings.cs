@@ -1,0 +1,13 @@
+﻿global using System;
+global using JukeBox.Api.DI;
+global using JukeBox.Api.Endpoints;
+global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.IdentityModel.Tokens;
+global using OpenIddict.Validation.AspNetCore;
+global using Serilog;
+global using Microsoft.AspNetCore.Authentication;
+global using BuildingBlock.Commons.DI;
+global using BuildingBlock.Commons.Services;
+global using JukeBox.Core.Interfaces;
+global using JukeBox.Core.Models;
+global using Microsoft.AspNetCore.Mvc;
