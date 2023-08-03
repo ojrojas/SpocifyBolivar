@@ -4,12 +4,16 @@ import snackSlice from './components/snackbar/redux/snackbarslice.slice'
 import { throttle } from 'lodash';
 import StorageAppService from './core/services/storage.service';
 import dashboardSlice from './pages/dashboard/redux/dashboard.slice';
+
+const presistedState = StorageAppService.GetState();
+
 export const store = configureStore({
 	reducer: {
 		login: authSlice,
 		snack: snackSlice,
 		dashboard: dashboardSlice
-	},
+	}, preloadedState: presistedState,
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });
 
 store.subscribe(
