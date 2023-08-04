@@ -17,7 +17,7 @@ builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddDIOpenIddictApplication();
+builder.Services.AddDIOpenIddictApplication(configuration);
 builder.Services.AddDIIdentityServerApplication();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

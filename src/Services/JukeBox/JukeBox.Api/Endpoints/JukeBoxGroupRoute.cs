@@ -4,14 +4,14 @@ public static class JukeBoxGroupRoute
 {
     public static RouteGroupBuilder AddJukeBoxGroupRoute(this RouteGroupBuilder group)
     {
-        group.MapGet("/jukebox/severalbrowse/{country}/{locale}/{limit}",
+        group.MapGet("/jukebox/severalbrowse/{query}",
             [Authorize] async
-            (HttpContext _context, IJukeBoxService _service, [FromRoute] string country, [FromRoute] string locale, [FromRoute] int limit, CancellationToken cancellationToken) =>
+            (HttpContext _context, IJukeBoxService _service, [FromRoute] string query, CancellationToken cancellationToken) =>
         {
             var result = await _context.AuthenticateAsync(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
             var userId = result.Principal!.FindFirst("sub")!.Value;
 
-            return await _service.GetSeveralBrowseAsync(new SeveralBrowseRequest { Country = country, Limit = limit, Locale = locale }, userId, cancellationToken);
+            return await _service.GetSeveralBrowseAsync(query, userId, cancellationToken);
         });
 
         group.MapGet("/jukebox/artist/{id}",
@@ -24,14 +24,13 @@ public static class JukeBoxGroupRoute
             return await _service.GetArtistAsync(id, userId, cancellationToken);
         });
 
-        group.MapGet("/jukebox/search/{query}/{type}/{limit}",
+        group.MapGet("/jukebox/search/{query}",
             [Authorize] async
-            (HttpContext _context, IJukeBoxService _service, [FromRoute] string query, [FromRoute] string type, [FromRoute] int limit, CancellationToken cancellationToken) =>
+            (HttpContext _context, IJukeBoxService _service, [FromRoute] string query, CancellationToken cancellationToken) =>
         {
             var result = await _context.AuthenticateAsync(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
             var userId = result.Principal!.FindFirst("sub")!.Value;
-
-            return await _service.GetSearchAsync(new SearchRequest { Query = query, Type = type, Limit = limit }, userId, cancellationToken);
+            return await _service.GetSearchAsync(query, userId, cancellationToken);
         });
         return group;
     }

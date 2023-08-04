@@ -1,20 +1,15 @@
 import React from "react";
 import { Grid, Paper, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { severalbrowse } from "./redux/dashboard.actions";
-import { SeveralBrowseRequest } from "../../core/dtos/spocify/severalbrowse.request";
+import { search } from "./redux/dashboard.actions";
+import { ListSeveralBrowseComponent } from "./components/list.several.browse";
 
 const DashboardPage: React.FC = () => {
 	const dispatch = useAppDispatch();
-	const { dashboard, login } = useAppSelector(state => state);
+	const { dashboard } = useAppSelector(state => state);
 
 	React.useEffect(() => {
-		let request: SeveralBrowseRequest = {
-			country: 'CO',
-			locale: 'ES_CO',
-			limit: 10
-		};
-		dispatch(severalbrowse(request));
+		dispatch(search('q=rock&type=album'));
 	}, []);
 
 	return (
@@ -24,11 +19,9 @@ const DashboardPage: React.FC = () => {
 					<Typography variant={"h6"} component='h6'>
 						Dashboard
 					</Typography>
-					<ul>
-						{dashboard && dashboard.severalbrowses && dashboard.severalbrowses?.categories?.items.map((item:any) => {
-							return (<li key={item.id}> <a href={item.href}><img src={item.icons.url} /> {item.name} </a></li>)
-						})}
-					</ul>
+					<Grid item xs={12} md={12} lg={12} xl={12} >
+						{ dashboard && dashboard.search && <ListSeveralBrowseComponent key={"severals"} search={ dashboard.search} /> }
+					</Grid>
 				</Paper>
 			</Grid>
 		</Grid>

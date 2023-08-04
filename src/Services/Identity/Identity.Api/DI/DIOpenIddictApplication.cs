@@ -2,7 +2,7 @@
 
 public static class DIOpenIddictApplication
 {
-    public static IServiceCollection AddDIOpenIddictApplication(this IServiceCollection services)
+    public static IServiceCollection AddDIOpenIddictApplication(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOpenIddict()
 
@@ -65,8 +65,8 @@ public static class DIOpenIddictApplication
                 config.UseWebProviders()
                 .AddSpotify(cfg =>
                 {
-                    cfg.SetClientId("b25e7e1a1fad419a98938cbcf2958cc9")
-                    .SetClientSecret("2396c6c3d1ef4f1692421d78e6e6ffa9")
+                    cfg.SetClientId(configuration.GetSection("ClientIdSpotify").Value)
+                    .SetClientSecret(configuration.GetSection("SecretClientSpotify").Value)
                     .SetRedirectUri("/callback/login/spotify");
                 });
             });

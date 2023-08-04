@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { useNavigate } from "react-router-dom";
 import { RouteConstantsPages } from "../../core/constants/route.pages.constants";
 import { logout } from "../../pages/login/redux/login.action";
+import { search } from "../../pages/dashboard/redux/dashboard.actions";
 
 const Search = styled("div")(({ theme }) => ({
 	position: "relative",
@@ -73,6 +74,10 @@ const SearchAppBar: React.FC<Props> = ({ onClick }) => {
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 	const navigateOn = useNavigate();
+
+	const onChangeInputBase = (value:any)=> {
+		dispacth(search(`q=${value.target.value}&type=album`))
+	}
 
 
 	const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -162,8 +167,7 @@ const SearchAppBar: React.FC<Props> = ({ onClick }) => {
 					aria-label="account of current user"
 					aria-controls="primary-search-account-menu"
 					aria-haspopup="true"
-					color="inherit"
-				>
+					color="inherit">
 					<AccountCircle />
 				</IconButton>
 				<p>Profile</p>
@@ -183,7 +187,7 @@ const SearchAppBar: React.FC<Props> = ({ onClick }) => {
 	return (
 		<Box sx={{ flexGrow: 1 }}>
 			<AppBar position="static">
-				<Toolbar style={{backgroundColor: 'var(--background1)' }}>
+				<Toolbar style={{ backgroundColor: 'var(--background1)' }}>
 					<IconButton
 						onClick={onClick}
 						size="large"
@@ -206,7 +210,7 @@ const SearchAppBar: React.FC<Props> = ({ onClick }) => {
 						</SearchIconWrapper>
 						<StyledInputBase
 							placeholder="Search…"
-							inputProps={{ "aria-label": "search" }}
+							inputProps={{ "aria-label": "search", onChange: (e) => {onChangeInputBase(e)} }}
 						/>
 					</Search>
 					<Box sx={{ flexGrow: 1 }} />

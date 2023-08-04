@@ -29,6 +29,8 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - IdentityUrl=${IDENTITYURL}
       - CacheConnection=redis.identity
+      - ClientIdSpotify=${IDENTITY_CLIENT_SPOTIFY}
+      - SecretClientSpotify=${IDENTITY_CLIENT_SECRET}
       - ConnectionIdentity=host=sql.identity;port=5432;database=IdentityDb;username=postgres;password=${IDENTITY_PASSWORD}
       - UrlsAllow=IdentityApi@http://${DNS_OR_IP_HOST_CONTAINER}:5005,JukeBoxApi@http://${DNS_OR_IP_HOST_CONTAINER}:5205
     ports:
@@ -60,6 +62,8 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - IdentityUrl=${IDENTITYURL}
       - CacheConnection=redis.identity
+      - ClientIdSpotify=${IDENTITY_CLIENT_SPOTIFY}
+      - SecretClientSpotify=${IDENTITY_CLIENT_SECRET}
     ports:
       - "5205:80"
     volumes:
