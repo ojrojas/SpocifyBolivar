@@ -11,12 +11,14 @@
     <None Remove="Services\" />
     <None Remove="Interfaces\" />
     <None Remove="Constants\" />
+    <None Remove="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Services\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Constants\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlock\BuildingBlock.Infraestructure\BuildingBlock.Infraestructure.csproj" />

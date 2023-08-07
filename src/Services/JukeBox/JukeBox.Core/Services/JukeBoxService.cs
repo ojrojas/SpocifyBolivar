@@ -1,47 +1,36 @@
-﻿using System.Net;
-
-namespace JukeBox.Core.Services;
+﻿namespace JukeBox.Core.Services;
 
 public class JukeBoxService : IJukeBoxService
 {
     private readonly ILoggingApplication<JukeBoxService> _logger;
-    private readonly ISpotifyTokenService _serviceToken;
-    private HttpClient? _httpClient;
-    private readonly JsonSerializerOptions _serializeOptions;
+    private readonly IIdentitySpocifyService _service;
+    private readonly IGetTokenService _tokenService;
+    private HttpClient _httpClient;
 
-    public JukeBoxService(ILoggingApplication<JukeBoxService> logger, ICacheApplicationService cache, ISpotifyTokenService tokenSpotify)
+    public JukeBoxService(ILoggingApplication<JukeBoxService> logger, IIdentitySpocifyService service)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _serviceToken = tokenSpotify ?? throw new ArgumentNullException(nameof(tokenSpotify));
-        _serializeOptions = new JsonSerializerOptions
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNameCaseInsensitive = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = true
-        };
+        _service = service ?? throw new ArgumentNullException(nameof(service));
     }
 
-    public async ValueTask<SeveralBrowse> GetSeveralBrowseAsync(string request, string userid, CancellationToken cancellationToken)
+    public async ValueTask<SearchResponse> GetSearchAsync(string request, ClaimsPrincipal principals, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Getting info spotify several browser endpoint");
-        var spocify = await _serviceToken.GetTokenAsync(userid, cancellationToken);
-        _httpClient = new HttpClient();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", spocify.Token);
-        var response = await _httpClient.GetAsync(SpotifyConstantsUrls.SeveralBrowseUrl(request));
-        if (response.IsSuccessStatusCode is false && response.StatusCode.Equals(HttpStatusCode.Unauthorized))
-        {
-            var newToken = await _serviceToken.GetRefreshTokenAsync(userid, cancellationToken);
-            _httpClient.DefaultRequestHeaders.Remove("Authorization");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", newToken.Token);
-            response = await _httpClient.GetAsync(SpotifyConstantsUrls.SeveralBrowseUrl(request));
-        }
-        var contentString = await response.Content.ReadAsStringAsync();
-
         try
         {
-            var severalBrowse = JsonSerializer.Deserialize<SeveralBrowse>(contentString, _serializeOptions);
-            return severalBrowse;
+            _logger.LogInformation("Getting info spotify search endpoint");
+            SpocifyIdentity spocify = _service.GetSpocifyIdentity(principals);
+            _httpClient = new HttpClient();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", spocify.Token);
+            var response = await _httpClient.GetAsync(SpotifyConstantsUrls.SearchUrl(request));
+            if (response.IsSuccessStatusCode is false && response.StatusCode.Equals(HttpStatusCode.Unauthorized))
+            {
+                var newToken = await _tokenService.GetRefreshTokenAsync(spocify, cancellationToken);
+                _httpClient.DefaultRequestHeaders.Remove("Authorization");
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", newToken.Token);
+                response = await _httpClient.GetAsync(SpotifyConstantsUrls.SearchUrl(request));
+            }
+            var contentString = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<SearchResponse>(contentString, GetJsonSerializerOptions.GetInstanceJsonSerializerOptions());
         }
         catch (Exception ex)
         {
@@ -49,42 +38,16 @@ public class JukeBoxService : IJukeBoxService
         }
     }
 
-    public async ValueTask<Search> GetSearchAsync(string request, string userid, CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Getting info spotify search endpoint");
-        var spocify = await _serviceToken.GetTokenAsync(userid, cancellationToken);
-        _httpClient = new HttpClient();
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", spocify.Token);
-        var response = await _httpClient.GetAsync(SpotifyConstantsUrls.SearchUrl(request));
-        if (response.IsSuccessStatusCode is false && response.StatusCode.Equals(HttpStatusCode.Unauthorized))
-        {
-            var newToken = await _serviceToken.GetRefreshTokenAsync(userid, cancellationToken);
-            _httpClient.DefaultRequestHeaders.Remove("Authorization");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", newToken.Token);
-            response = await _httpClient.GetAsync(SpotifyConstantsUrls.SearchUrl(request));
-        }
-        var contentString = await response.Content.ReadAsStringAsync();
-        try
-        {
-            var search = JsonSerializer.Deserialize<Search>(contentString, _serializeOptions);
-            return search;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message, ex);
-        }
-    }
-
-    public async ValueTask<Artist> GetArtistAsync(string request, string userid, CancellationToken cancellationToken)
+    public async ValueTask<Artist> GetArtistAsync(string request, ClaimsPrincipal principals, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Getting info spotify artist endpoint");
-        var spocify = await _serviceToken.GetTokenAsync(userid, cancellationToken);
+        SpocifyIdentity spocify = _service.GetSpocifyIdentity(principals);
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", spocify.Token);
         var response = await _httpClient.GetAsync(SpotifyConstantsUrls.ArtistUrl(request));
         if (response.IsSuccessStatusCode is false && response.StatusCode.Equals(HttpStatusCode.Unauthorized))
         {
-            var newToken = await _serviceToken.GetRefreshTokenAsync(userid, cancellationToken);
+            var newToken = await _tokenService.GetRefreshTokenAsync(spocify, cancellationToken);
             _httpClient.DefaultRequestHeaders.Remove("Authorization");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", newToken.Token);
             response = await _httpClient.GetAsync(SpotifyConstantsUrls.ArtistUrl(request));
@@ -93,7 +56,7 @@ public class JukeBoxService : IJukeBoxService
         var contentString = await response.Content.ReadAsStringAsync();
         try
         {
-            var artist = JsonSerializer.Deserialize<Artist>(contentString, _serializeOptions);
+            var artist = JsonSerializer.Deserialize<Artist>(contentString, GetJsonSerializerOptions.GetInstanceJsonSerializerOptions());
             return artist;
         }
         catch (Exception ex)
@@ -101,5 +64,29 @@ public class JukeBoxService : IJukeBoxService
             throw new Exception(ex.Message, ex);
         }
     }
-}
 
+    public async ValueTask<AlbumResponse> GetAlbumAsync(string request, ClaimsPrincipal principals, CancellationToken cancellationToken)
+    {
+        try
+        {
+            _logger.LogInformation("Getting info spotify search endpoint");
+            SpocifyIdentity spocify = _service.GetSpocifyIdentity(principals);
+            _httpClient = new HttpClient();
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", spocify.Token);
+            var response = await _httpClient.GetAsync(SpotifyConstantsUrls.AlbumUrl(request));
+            if (response.IsSuccessStatusCode is false && response.StatusCode.Equals(HttpStatusCode.Unauthorized))
+            {
+                var newToken = await _tokenService.GetRefreshTokenAsync(spocify, cancellationToken);
+                _httpClient.DefaultRequestHeaders.Remove("Authorization");
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", newToken.Token);
+                response = await _httpClient.GetAsync(SpotifyConstantsUrls.SearchUrl(request));
+            }
+            var contentString = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<AlbumResponse>(contentString, GetJsonSerializerOptions.GetInstanceJsonSerializerOptions());
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message, ex);
+        }
+    }
+}

@@ -1,9 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { login, logincallback, logout } from "./login.action";
-import { ILoginApplicationResponse } from "../../../core/dtos/userapplication/loginapplicationresponse";
-import { ILoginApplicationRequest } from "../../../core/dtos/userapplication/loginapplicationrequest";
-import { DecodeJwt } from "../../../core/services/decodejwt.service";
-import { IUser } from "../../../core/models/user/user";
+import { getinfouser, login, logincallback, logout } from "./login.action";
+import { IApplicationUser } from "../../../core/models/user/user";
+import { ILoginApplicationResponse } from "../../../core/models/userapplication/loginapplicationresponse";
+import { ILoginApplicationRequest } from "../../../core/models/userapplication/loginapplicationrequest";
 
 interface State {
     loginApplicationResponse: ILoginApplicationResponse | undefined;
@@ -11,7 +10,7 @@ interface State {
     loading:boolean;
     error:any;
     logged: boolean;
-    user: IUser | undefined;
+    user: IApplicationUser | undefined;
 }
 
 const InitialState: State = {
@@ -50,10 +49,13 @@ const authSlice = createSlice({
 		});
 		builder.addCase(logincallback.fulfilled, (state, action) => {
 			state.loginApplicationResponse = action.payload;
-			// if (state.loginApplicationResponse.access_token !== undefined)
-			// 	state.user = DecodeJwt.decodeJwt(state.loginApplicationResponse.access_token);
 			state.loading=false;
 		});
+		builder.addCase(logincallback.rejected, (state) => {
+			state.loading = false;
+			state.loginApplicationResponse = undefined;
+			state.logged = false;
+		})
 
 		builder.addCase(logout.pending, (state) => {
 			state.loading = true;
@@ -69,6 +71,19 @@ const authSlice = createSlice({
 			state.loginApplicationResponse = undefined;
 			state.loginApplicationRequest = undefined;
 			state.loading = false;
+		});
+
+		builder.addCase(getinfouser.pending, (state) => {
+			state.loading = true;
+		})
+		builder.addCase(getinfouser.fulfilled, (state, action)=>{
+			state.user = action.payload;
+			state.loading = false;
+		})
+		builder.addCase(getinfouser.rejected, (state, action) => {
+			state.logged = false;
+			state.loading = false;
+			state.loginApplicationRequest = undefined;
 		});
     }
 });

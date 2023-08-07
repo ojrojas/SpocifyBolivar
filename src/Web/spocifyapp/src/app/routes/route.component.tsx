@@ -15,7 +15,6 @@ const router = createBrowserRouter([
                 element: <DashboardPage />
             }
         ]
-
     },
     {
         path: RouteConstantsPages.login,

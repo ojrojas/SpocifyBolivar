@@ -38,6 +38,8 @@ builder.Services.AddCors(setup =>
     });
 });
 
+builder.Services.AddHealthChecks();
+
 var urls = configuration["UrlsAllow"];
 ArgumentNullException.ThrowIfNull(urls);
 var clientUrls = TransformString.TransformStringtoDictionary(urls);
@@ -74,7 +76,6 @@ if (app.Environment.IsDevelopment())
             options.OAuthClientSecret("a961a072-4a69-4b10-bc17-1551d454d44c");
         });
 }
-
 
 app.UseHttpsRedirection();
 

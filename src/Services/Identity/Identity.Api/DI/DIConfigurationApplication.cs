@@ -13,7 +13,9 @@ public static class DIConfigurationApplication
 
         app.MapGroup(string.Empty).AddAuthorizationGroupRoute();
         app.MapGroup(string.Empty).AddCallbackGroupRoute();
-        //app.MapGroup("/api").AddUserApplicationGroupRoute();
+        app.MapGroup(string.Empty).AddApplicationUserGroupRoute();
+        app.MapHealthChecks("/health").RequireAuthorization();
+
         return app;
 	}
 }

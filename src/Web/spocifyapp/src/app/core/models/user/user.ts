@@ -1,5 +1,3 @@
-import { IBaseEntity } from "../baseentity";
-
-export interface IUser extends IBaseEntity {
+export interface IApplicationUser {
     name: string;
 }

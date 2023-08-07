@@ -1,14 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { artist, search, severalbrowse } from "./dashboard.actions";
-import { Artist } from "../../../core/models/spocify/artist";
-import { Search } from "../../../core/models/spocify/search";
-import { SeveralBrowse } from "../../../core/models/spocify/severalbrowse";
+import { album, artist, search, severalbrowse } from "./dashboard.actions";
+import { IArtist, ISearchResponse } from "../../../core/models/spocify/search";
+import { ISeveralBrowse } from "../../../core/models/spocify/severalbrowse";
+import { IAlbumResponse } from "../../../core/models/spocify/album";
 
 interface State {
     loading: boolean;
-    severalbrowse: SeveralBrowse | undefined,
-    artist: Artist | undefined,
-    search: Search | undefined,
+    severalbrowse: ISeveralBrowse | undefined,
+    artist: IArtist | undefined,
+    album: IAlbumResponse | undefined;
+    search: ISearchResponse | undefined,
     error: any
 }
 
@@ -16,6 +17,7 @@ const InitialState: State = {
     loading: false,
     artist: undefined,
     search: undefined,
+    album: undefined,
     severalbrowse: undefined,
     error: undefined
 }
@@ -62,6 +64,20 @@ const dashboardSlice = createSlice({
             state.loading = false;
             state.error = action.error;
             state.artist = undefined;
+        })
+
+        builder.addCase(album.pending, (state) => {
+            state.loading = true;
+        })
+
+        builder.addCase(album.fulfilled, (state, action)=> {
+            state.loading = false;
+            state.album = action.payload;
+        })
+        builder.addCase(album.rejected, (state, action) => {
+            state.loading = false;
+            state.album= undefined;
+            state.error = action.error;
         })
     }
 })

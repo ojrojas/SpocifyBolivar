@@ -2,7 +2,8 @@
 
 public static class DIOpenIddictApplication
 {
-    public static IServiceCollection AddDIOpenIddictApplication(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDIOpenIddictApplication(
+        this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOpenIddict()
 
@@ -17,6 +18,7 @@ public static class DIOpenIddictApplication
                 config.AllowAuthorizationCodeFlow();
                 config.AllowPasswordFlow();
                 config.AllowClientCredentialsFlow();
+                config.AllowRefreshTokenFlow();
 
                 config.RequireProofKeyForCodeExchange();
 
@@ -75,4 +77,3 @@ public static class DIOpenIddictApplication
 
     }
 }
-

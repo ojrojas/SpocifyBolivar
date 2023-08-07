@@ -15,14 +15,6 @@ public static class DIOpenIddictApplication
                     new SymmetricSecurityKey(
                         Convert.FromBase64String("U3BvY2lmeTNkOWMyNzhiLTgyZDEtNGI4OC05NDRjLTg=")));
 
-
-                // Configure the validation handler to use introspection and register the client
-                // credentials used when communicating with the remote introspection endpoint.
-                //config.UseIntrospection()
-                //       .SetClientId("jukeboxswaggerui")
-                //       .SetClientSecret("ecc12056-5ac5-4067-938a-544c0a579f31");
-
-
                 // Register the System.Net.Http integration.
                 config.UseSystemNetHttp();
 

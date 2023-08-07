@@ -1,7 +1,4 @@
-﻿using JukeBox.Core.Interfaces;
-using JukeBox.Core.Services;
-
-namespace JukeBox.Api.DI;
+﻿namespace JukeBox.Api.DI;
 
 public static class DIServiceApplication
 {
@@ -10,7 +7,8 @@ public static class DIServiceApplication
         services.AddTransient(typeof(ILoggingApplication<>), typeof(LoggingApplication<>));
         services.AddTransient<ICacheApplicationService, CacheApplicationService>();
         services.AddTransient<IJukeBoxService, JukeBoxService>();
-        services.AddTransient<ISpotifyTokenService, SpotifyTokenService>();
+        services.AddTransient<IIdentitySpocifyService, IdentitySpocifyService>();
+        services.AddTransient<IGetTokenService, GetTokenService>();
 
 
         return services;

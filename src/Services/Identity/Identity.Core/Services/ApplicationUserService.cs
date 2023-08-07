@@ -35,11 +35,6 @@ public class ApplicationUserService : IApplicationUserService
     /// </summary>
     private readonly IOpenIddictScopeManager _scopeManager;
 
-    /// <summary>
-    /// Password hasher
-    /// </summary>
-    private readonly IPasswordHasher<ApplicationUser> _passwordHasher = new PasswordHasher<ApplicationUser>();
-
     public ApplicationUserService(ILoggingApplication<ApplicationUserService> logger,
                                   ICacheApplicationService cache,
                                   UserManager<ApplicationUser> userManager,
@@ -56,10 +51,10 @@ public class ApplicationUserService : IApplicationUserService
         _applicationManager = applicationManager ?? throw new ArgumentNullException(nameof(applicationManager));
         _authorizationManager = authorizationManager ?? throw new ArgumentNullException(nameof(authorizationManager));
         _scopeManager = scopeManager ?? throw new ArgumentNullException(nameof(scopeManager));
-        _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
     }
 
-    public async ValueTask<IResult> LoginAsync(LoginApplicationUserRequest request, CancellationToken cancellationToken)
+    public async ValueTask<IResult> LoginAsync(
+        LoginApplicationUserRequest request, CancellationToken cancellationToken)
     {
         try
         {
@@ -93,7 +88,11 @@ public class ApplicationUserService : IApplicationUserService
                     roleType: Claims.Role);
 
                 // Add the claims that will be persisted in the tokens.
-                identity.SetClaim(Claims.Subject, request.UserName);
+                identity.SetClaim(Claims.Subject, result.Id);
+                identity.SetClaim(Claims.Name, result.FullName);
+                identity.SetClaim("TokenSpocify", result.Token);
+                identity.SetClaim("CodeSpocify", result.Code);
+                identity.SetClaim("RefreshTokenSpocify", result.RefreshToken);
 
                 // Note: in this sample, the granted scopes match the requested scope
                 // but you may want to allow the user to uncheck specific scopes.

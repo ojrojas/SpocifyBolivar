@@ -1,21 +1,19 @@
 import { List } from "@mui/material";
-import { Fragment } from "react"
 import { ItemListSeveralBrowseComponent } from "./item.list.several.browse";
-import { Item, Search } from "../../../core/models/spocify/search";
+import { IItem, ISearchResponse } from "../../../core/models/spocify/search";
 
 interface Props {
-    search: Search
+    search: ISearchResponse
 }
 
 export const ListSeveralBrowseComponent: React.FC<Props> = ({ search }) => {
-    return (<Fragment>
-
-        <List dense sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-            {search && search.albums?.items.map((item: Item, idx) => {
+    return (
+        <List dense sx={{ width: '100%',borderRadius:5 }}>
+            {search && search.albums?.items.map((item: IItem, idx) => {
                 return (
-                    <ItemListSeveralBrowseComponent key={item.name+item.id+idx} item={item} />
+                    <ItemListSeveralBrowseComponent key={item.name + item.id + idx} item={item} />
                 );
             })}
         </List>
-    </Fragment>);
+    );
 }

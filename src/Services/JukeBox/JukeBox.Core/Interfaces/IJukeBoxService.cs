@@ -2,7 +2,7 @@
 
 public interface IJukeBoxService
 {
-    ValueTask<Search> GetSearchAsync(string request, string userid, CancellationToken cancellationToken);
-    ValueTask<Artist> GetArtistAsync(string request, string userid, CancellationToken cancellationToken);
-    ValueTask<SeveralBrowse> GetSeveralBrowseAsync(string request, string userid, CancellationToken cancellationToken);
+    ValueTask<SearchResponse> GetSearchAsync(string request, ClaimsPrincipal principal, CancellationToken cancellationToken);
+    ValueTask<Artist> GetArtistAsync(string request, ClaimsPrincipal principal, CancellationToken cancellationToken);
+    ValueTask<AlbumResponse> GetAlbumAsync(string request, ClaimsPrincipal principals, CancellationToken cancellationToken);
 }

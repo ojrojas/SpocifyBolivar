@@ -27,4 +27,5 @@ global using OpenIddict.Validation.AspNetCore;
 global using Quartz;
 global using OpenIddict.Client.WebIntegration;
 global using Serilog;
+global using Microsoft.AspNetCore.Authorization;
 global using static OpenIddict.Abstractions.OpenIddictConstants;

@@ -49,27 +49,11 @@ public static class CallbackGroupRoute
                     CreateOn = DateTimeOffset.UtcNow,
                 };
 
-                identity.AddClaim(new Claim("id", spocify.Id));
-                identity.AddClaim(new Claim("display_name", spocify.FullName));
-                identity.AddClaim(new Claim("token_spocify", spocify.Token ));
-                identity.AddClaim(new Claim("refresh_token_spocify", spocify.RefreshToken ));
-                identity.AddClaim(new Claim("state_token_spocify",spocify.StateSpocify ));
-                identity.AddClaim(new Claim("code_spocify", spocify.Code));
-
                 await _cache.SetAsync(userid, spocify);
 
                 var properties = new AuthenticationProperties
                 {
                     RedirectUri = $"http://localhost:3000/logincallback/{userid}",
-                    Parameters =
-                    {
-                        ["id"]=spocify.Id,
-                        ["display_name"]=spocify.FullName,
-                        ["token_spocify"]=spocify.Token,
-                        ["token_refresh_spocify"]=spocify.RefreshToken,
-                        ["state_token_spocify"]=spocify.StateSpocify,
-                        ["code_spocify"]=spocify.Code
-                    }
                 };
 
                 return Results.SignIn(new ClaimsPrincipal(identity), properties: properties, CookieAuthenticationDefaults.AuthenticationScheme);

@@ -3,6 +3,7 @@ import { Grid, Paper, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { search } from "./redux/dashboard.actions";
 import { ListSeveralBrowseComponent } from "./components/list.several.browse";
+import { DisplaySelectedComponent } from "./components/display.selected";
 
 const DashboardPage: React.FC = () => {
 	const dispatch = useAppDispatch();
@@ -13,14 +14,21 @@ const DashboardPage: React.FC = () => {
 	}, []);
 
 	return (
-		<Grid container sx={{ padding: 1, height: "100vh" }} gridRow={1}>
-			<Grid item xs={12} md={12} lg={12} xl={12}>
-				<Paper elevation={4} sx={{ backgroundColor: "#fff", height: "99%", padding: 5 }}>
+		<Grid container sx={{ padding: 1 }} gridRow={1}>
+			<Grid item xs={12}>
+				<Paper elevation={2} sx={{ width:'100%', backgroundColor: "#fff", padding: 5, borderRadius: 3, height: '100%' }}>
 					<Typography variant={"h6"} component='h6'>
 						Dashboard
 					</Typography>
-					<Grid item xs={12} md={12} lg={12} xl={12} >
-						{ dashboard && dashboard.search && <ListSeveralBrowseComponent key={"severals"} search={ dashboard.search} /> }
+					<Grid container columns={{ xs: 4, sm: 8, md: 12 }} style={{ borderRadius: 5 }}>
+						<Grid item container spacing={.5}>
+							<Grid item xs={12} md={6} lg={6} color={'var(--color1)'} style={{ backgroundColor: 'var(--background2)', padding: 5, borderRadius: 8 }}>
+								{dashboard && dashboard.search && <ListSeveralBrowseComponent key={"severals"} search={dashboard.search} />}
+							</Grid>
+							<Grid item xs={12} md={6} lg={6} color={'var(--color1)'} style={{ backgroundColor: 'var(--background1)', padding: 5, borderRadius: 8 }}>
+								{<DisplaySelectedComponent />}
+							</Grid>
+						</Grid>
 					</Grid>
 				</Paper>
 			</Grid>

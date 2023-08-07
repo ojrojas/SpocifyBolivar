@@ -11,10 +11,13 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { Collapse, colors, CssBaseline, Divider, Grid, styled, Tooltip, Typography } from "@mui/material";
 import { MenuLinkList } from "./constants/menuslink";
 import styles from "./drawercomponent.module.css";
-import { useAppSelector } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { MenuItem } from "../../core/models/menulink.model";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { RouteConstantsPages } from "../../core/constants/route.pages.constants";
+import { getinfouser } from "../../pages/login/redux/login.action";
+import { updateLogged } from "../../pages/login/redux/login.slice";
+import { closeSnackBarSpocify } from "../snackbar/redux/snackbarslice.slice";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
 	display: "flex",
@@ -29,13 +32,25 @@ const SwipeableTemporaryDrawer: React.FC = () => {
 	const { logged } = useAppSelector(login => login.login);
 	const [expanded, setExpanded] = React.useState<string | false>(false);
 	const navigateOn = useNavigate();
+	const dispatch = useAppDispatch();
 
 	React.useEffect(() => {
-		if (!logged)
+		if (!logged){
+			dispatch(closeSnackBarSpocify());
 			navigateOn(RouteConstantsPages.login);
-		else
-			navigateOn(RouteConstantsPages.home);
-	}, [logged]);
+		}
+		else{
+			dispatch(getinfouser()).unwrap().then(response =>{
+				console.log(response);
+				navigateOn(RouteConstantsPages.home);
+			}).catch(error => {
+				dispatch(updateLogged(false));
+				dispatch(closeSnackBarSpocify());
+				navigateOn(RouteConstantsPages.login);
+				console.error(error)
+			})
+		}
+	}, []);
 
 	const haveSubMenusOnNavigate = (menuItem: MenuItem) => {
 		if (menuItem.subMenus) {

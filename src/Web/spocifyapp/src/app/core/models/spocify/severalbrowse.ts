@@ -1,6 +1,6 @@
-export interface Categories {
+export interface ICategories {
   href: string;
-  items: Item2[];
+  items: IItem2[];
   limit: number;
   next: string;
   offset: number;
@@ -8,19 +8,19 @@ export interface Categories {
   total: number;
 }
 
-export interface Icon {
+export interface IIcon {
   height: number;
   url: string;
   width: number;
 }
 
-export interface Item2 {
+export interface IItem2 {
   href: string;
-  icons: Icon[];
+  icons: IIcon[];
   id: string;
   name: string;
 }
 
-export interface SeveralBrowse {
-  categories: Categories;
+export interface ISeveralBrowse {
+  categories: ICategories;
 }

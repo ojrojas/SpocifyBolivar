@@ -1,8 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RouteHttp } from "../../../core/constants/route.https.constants";
-import { ILoginApplicationResponse } from "../../../core/dtos/userapplication/loginapplicationresponse";
-import { ILoginApplicationRequest } from "../../../core/dtos/userapplication/loginapplicationrequest";
 import HttpClientApplication from "../../../core/services/api.service";
+import { ILoginApplicationResponse } from "../../../core/models/userapplication/loginapplicationresponse";
+import { ILoginApplicationRequest } from "../../../core/models/userapplication/loginapplicationrequest";
+import { IApplicationUser } from "../../../core/models/user/user";
 
 export const login = createAsyncThunk("auth/login", async () => {
 	window.location.href = RouteHttp.login
@@ -25,4 +26,10 @@ export const logincallback = createAsyncThunk<ILoginApplicationResponse, ILoginA
 
 export const logout = createAsyncThunk("auth/logged", async () => {
 	return false;
+});
+
+
+export const getinfouser = createAsyncThunk<IApplicationUser>("auth/getuserinfo", async () => {
+	const api = new HttpClientApplication();
+	return await api.Get<IApplicationUser>(RouteHttp.getinfouser);
 });
