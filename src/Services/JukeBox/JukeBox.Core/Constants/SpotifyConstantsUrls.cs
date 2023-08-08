@@ -22,5 +22,36 @@ public static class SpotifyConstantsUrls
 	{
 		return $"https://api.spotify.com/v1/albums/{id}";
     }
+
+	public static string GetPlayerState()
+	{
+		return "https://api.spotify.com/v1/me/player";
+
+    }
+
+	public static string PlayStartResume()
+	{
+		return "https://api.spotify.com/v1/me/player";
+    }
+
+	public static string SetPlayBackVolume(int request)
+	{
+		return $"https://api.spotify.com/v1/me/player/volume?volume_percent={request}";
+    }
+
+    public static string SetPausePlayer()
+    {
+        return "https://api.spotify.com/v1/me/player/pause";
+    }
+
+    public static string SetPlayerNext()
+    {
+        return "https://api.spotify.com/v1/me/player/next";
+    }
+
+    public static string SetPlayerPrevious()
+    {
+        return "https://api.spotify.com/v1/me/player/previous";
+    }
 }
 

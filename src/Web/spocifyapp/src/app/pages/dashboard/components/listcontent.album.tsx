@@ -1,5 +1,6 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { IAlbumResponse } from "../../../core/models/spocify/album";
+import { ItemTracksComponent } from "./item.tracks";
 
 interface Props {
     album?: IAlbumResponse
@@ -19,13 +20,7 @@ export const ListContentAlbumComponent: React.FC<Props> = ({ album }) => {
                 </TableHead>
                 <TableBody>
                     {album && album.tracks && album.tracks.items && album.tracks.items.map((item, idx) => (
-                        <TableRow>
-                            <TableCell>{idx+1}</TableCell>
-                            <TableCell>{item.name}</TableCell>
-                            <TableCell>{item.name}</TableCell>
-                            <TableCell>{album?.release_date}</TableCell>
-                            <TableCell>{item.duration_ms}</TableCell>
-                        </TableRow>
+                        <ItemTracksComponent key={idx+album.id} item={item} album={album} idx={idx+1} />
                     ))}
                 </TableBody>
             </Table>

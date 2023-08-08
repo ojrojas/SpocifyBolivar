@@ -9,6 +9,11 @@ export const RouteHttp = {
     severalbrowse: `${routeApiJukebox}jukebox/severalbrowse/`,
     search: `${routeApiJukebox}jukebox/search/`,
     artist: `${routeApiJukebox}jukebox/artist/`,
-    album: `${routeApiJukebox}jukebox/album/`
+    album: `${routeApiJukebox}jukebox/album/`,
+    playerstate: `${routeApiJukebox}jukebox/playerstate`,
+    playerstartresume: `${routeApiJukebox}jukebox/startresume`,
+    playervolume: `${routeApiJukebox}jukebox/playervolume/`,
+    playernext: `${routeApiJukebox}jukebox/playernext`,
+    playerprevious: `${routeApiJukebox}jukebox/playerprevious`
 }
 
