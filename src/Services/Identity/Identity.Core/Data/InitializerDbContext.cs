@@ -1,6 +1,4 @@
-﻿using OpenIddict.Abstractions;
-
-namespace Identity.Core.Data;
+﻿namespace Identity.Core.Data;
 
 public class InitializerDbContext
 {
